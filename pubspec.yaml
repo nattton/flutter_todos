@@ -1,0 +1,34 @@
+name: flutter_todos
+description: An example todos app that showcases bloc state management patterns.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+  flutter: ^3.35.0
+
+dependencies:
+  bloc: ^9.0.1
+  equatable: ^2.0.7
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.1
+  flutter_localizations:
+    sdk: flutter
+  freezed: ^3.2.3
+  freezed_annotation: ^3.1.0
+  intl: ^0.20.2
+  json_annotation: ^4.9.0
+  uuid: ^4.5.1
+
+dev_dependencies:
+  bloc_test: ^10.0.0
+  flutter_test:
+    sdk: flutter
+  json_serializable: ^6.11.1
+  mocktail: ^1.0.4
+  very_good_analysis: ^10.0.0
+
+flutter:
+  generate: true
+  uses-material-design: true
