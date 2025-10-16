@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_todos/todo/todo.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:uuid/uuid.dart';
@@ -11,8 +10,9 @@ part 'todo_page_state.dart';
 class TodoPageBloc extends Bloc<TodoPageEvent, TodoPageState> {
   TodoPageBloc() : super(const TodoPageState()) {
     on<_Adding>(_onAdding);
+    on<_Editing>(_onEditing);
     on<_Listing>(_onListing);
-    on<_Add>(_onAdd);
+    on<_Save>(_onSave);
     on<_Remove>(_onRemove);
     on<_ToggleComplete>(_onToggleComplete);
   }
@@ -21,11 +21,38 @@ class TodoPageBloc extends Bloc<TodoPageEvent, TodoPageState> {
     emit(state.copyWith(status: TodoPageStatus.adding));
   }
 
+  Future<void> _onEditing(_Editing event, Emitter<TodoPageState> emit) async {
+    emit(
+      state.copyWith(
+        status: TodoPageStatus.editing,
+        editingItem: event.item,
+      ),
+    );
+  }
+
   Future<void> _onListing(_Listing event, Emitter<TodoPageState> emit) async {
     emit(state.copyWith(status: TodoPageStatus.listing));
   }
 
-  Future<void> _onAdd(_Add event, Emitter<TodoPageState> emit) async {
+  Future<void> _onSave(_Save event, Emitter<TodoPageState> emit) async {
+    if (state.status == TodoPageStatus.editing) {
+      final updatedItems = state.items.map((item) {
+        if (item.id == event.item.id) {
+          return event.item;
+        }
+        return item;
+      }).toList();
+
+      emit(
+        state.copyWith(
+          items: updatedItems,
+          status: TodoPageStatus.listing,
+          editingItem: null,
+        ),
+      );
+      return;
+    }
+
     final newItem = event.item.copyWith(id: const Uuid().v4());
     emit(
       state.copyWith(

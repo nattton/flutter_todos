@@ -55,13 +55,14 @@ extension TodoPageEventPatterns on TodoPageEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Adding value)?  adding,TResult Function( _Listing value)?  listing,TResult Function( _Add value)?  add,TResult Function( _Remove value)?  remove,TResult Function( _ToggleComplete value)?  toggleComplete,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Adding value)?  adding,TResult Function( _Editing value)?  editing,TResult Function( _Listing value)?  listing,TResult Function( _Save value)?  save,TResult Function( _Remove value)?  remove,TResult Function( _ToggleComplete value)?  toggleComplete,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Adding() when adding != null:
-return adding(_that);case _Listing() when listing != null:
-return listing(_that);case _Add() when add != null:
-return add(_that);case _Remove() when remove != null:
+return adding(_that);case _Editing() when editing != null:
+return editing(_that);case _Listing() when listing != null:
+return listing(_that);case _Save() when save != null:
+return save(_that);case _Remove() when remove != null:
 return remove(_that);case _ToggleComplete() when toggleComplete != null:
 return toggleComplete(_that);case _:
   return orElse();
@@ -81,13 +82,14 @@ return toggleComplete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Adding value)  adding,required TResult Function( _Listing value)  listing,required TResult Function( _Add value)  add,required TResult Function( _Remove value)  remove,required TResult Function( _ToggleComplete value)  toggleComplete,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Adding value)  adding,required TResult Function( _Editing value)  editing,required TResult Function( _Listing value)  listing,required TResult Function( _Save value)  save,required TResult Function( _Remove value)  remove,required TResult Function( _ToggleComplete value)  toggleComplete,}){
 final _that = this;
 switch (_that) {
 case _Adding():
-return adding(_that);case _Listing():
-return listing(_that);case _Add():
-return add(_that);case _Remove():
+return adding(_that);case _Editing():
+return editing(_that);case _Listing():
+return listing(_that);case _Save():
+return save(_that);case _Remove():
 return remove(_that);case _ToggleComplete():
 return toggleComplete(_that);}
 }
@@ -103,13 +105,14 @@ return toggleComplete(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Adding value)?  adding,TResult? Function( _Listing value)?  listing,TResult? Function( _Add value)?  add,TResult? Function( _Remove value)?  remove,TResult? Function( _ToggleComplete value)?  toggleComplete,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Adding value)?  adding,TResult? Function( _Editing value)?  editing,TResult? Function( _Listing value)?  listing,TResult? Function( _Save value)?  save,TResult? Function( _Remove value)?  remove,TResult? Function( _ToggleComplete value)?  toggleComplete,}){
 final _that = this;
 switch (_that) {
 case _Adding() when adding != null:
-return adding(_that);case _Listing() when listing != null:
-return listing(_that);case _Add() when add != null:
-return add(_that);case _Remove() when remove != null:
+return adding(_that);case _Editing() when editing != null:
+return editing(_that);case _Listing() when listing != null:
+return listing(_that);case _Save() when save != null:
+return save(_that);case _Remove() when remove != null:
 return remove(_that);case _ToggleComplete() when toggleComplete != null:
 return toggleComplete(_that);case _:
   return null;
@@ -128,12 +131,13 @@ return toggleComplete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  adding,TResult Function()?  listing,TResult Function( TodoItem item)?  add,TResult Function( String id)?  remove,TResult Function( String id)?  toggleComplete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  adding,TResult Function( TodoItem item)?  editing,TResult Function()?  listing,TResult Function( TodoItem item)?  save,TResult Function( String id)?  remove,TResult Function( String id)?  toggleComplete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Adding() when adding != null:
-return adding();case _Listing() when listing != null:
-return listing();case _Add() when add != null:
-return add(_that.item);case _Remove() when remove != null:
+return adding();case _Editing() when editing != null:
+return editing(_that.item);case _Listing() when listing != null:
+return listing();case _Save() when save != null:
+return save(_that.item);case _Remove() when remove != null:
 return remove(_that.id);case _ToggleComplete() when toggleComplete != null:
 return toggleComplete(_that.id);case _:
   return orElse();
@@ -153,12 +157,13 @@ return toggleComplete(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  adding,required TResult Function()  listing,required TResult Function( TodoItem item)  add,required TResult Function( String id)  remove,required TResult Function( String id)  toggleComplete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  adding,required TResult Function( TodoItem item)  editing,required TResult Function()  listing,required TResult Function( TodoItem item)  save,required TResult Function( String id)  remove,required TResult Function( String id)  toggleComplete,}) {final _that = this;
 switch (_that) {
 case _Adding():
-return adding();case _Listing():
-return listing();case _Add():
-return add(_that.item);case _Remove():
+return adding();case _Editing():
+return editing(_that.item);case _Listing():
+return listing();case _Save():
+return save(_that.item);case _Remove():
 return remove(_that.id);case _ToggleComplete():
 return toggleComplete(_that.id);}
 }
@@ -174,12 +179,13 @@ return toggleComplete(_that.id);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  adding,TResult? Function()?  listing,TResult? Function( TodoItem item)?  add,TResult? Function( String id)?  remove,TResult? Function( String id)?  toggleComplete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  adding,TResult? Function( TodoItem item)?  editing,TResult? Function()?  listing,TResult? Function( TodoItem item)?  save,TResult? Function( String id)?  remove,TResult? Function( String id)?  toggleComplete,}) {final _that = this;
 switch (_that) {
 case _Adding() when adding != null:
-return adding();case _Listing() when listing != null:
-return listing();case _Add() when add != null:
-return add(_that.item);case _Remove() when remove != null:
+return adding();case _Editing() when editing != null:
+return editing(_that.item);case _Listing() when listing != null:
+return listing();case _Save() when save != null:
+return save(_that.item);case _Remove() when remove != null:
 return remove(_that.id);case _ToggleComplete() when toggleComplete != null:
 return toggleComplete(_that.id);case _:
   return null;
@@ -224,6 +230,81 @@ String toString() {
 /// @nodoc
 
 
+class _Editing implements TodoPageEvent {
+  const _Editing({required this.item});
+  
+
+ final  TodoItem item;
+
+/// Create a copy of TodoPageEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$EditingCopyWith<_Editing> get copyWith => __$EditingCopyWithImpl<_Editing>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Editing&&(identical(other.item, item) || other.item == item));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,item);
+
+@override
+String toString() {
+  return 'TodoPageEvent.editing(item: $item)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$EditingCopyWith<$Res> implements $TodoPageEventCopyWith<$Res> {
+  factory _$EditingCopyWith(_Editing value, $Res Function(_Editing) _then) = __$EditingCopyWithImpl;
+@useResult
+$Res call({
+ TodoItem item
+});
+
+
+$TodoItemCopyWith<$Res> get item;
+
+}
+/// @nodoc
+class __$EditingCopyWithImpl<$Res>
+    implements _$EditingCopyWith<$Res> {
+  __$EditingCopyWithImpl(this._self, this._then);
+
+  final _Editing _self;
+  final $Res Function(_Editing) _then;
+
+/// Create a copy of TodoPageEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? item = null,}) {
+  return _then(_Editing(
+item: null == item ? _self.item : item // ignore: cast_nullable_to_non_nullable
+as TodoItem,
+  ));
+}
+
+/// Create a copy of TodoPageEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TodoItemCopyWith<$Res> get item {
+  
+  return $TodoItemCopyWith<$Res>(_self.item, (value) {
+    return _then(_self.copyWith(item: value));
+  });
+}
+}
+
+/// @nodoc
+
+
 class _Listing implements TodoPageEvent {
   const _Listing();
   
@@ -256,8 +337,8 @@ String toString() {
 /// @nodoc
 
 
-class _Add implements TodoPageEvent {
-  const _Add({required this.item});
+class _Save implements TodoPageEvent {
+  const _Save({required this.item});
   
 
  final  TodoItem item;
@@ -266,13 +347,13 @@ class _Add implements TodoPageEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
+_$SaveCopyWith<_Save> get copyWith => __$SaveCopyWithImpl<_Save>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.item, item) || other.item == item));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Save&&(identical(other.item, item) || other.item == item));
 }
 
 
@@ -281,15 +362,15 @@ int get hashCode => Object.hash(runtimeType,item);
 
 @override
 String toString() {
-  return 'TodoPageEvent.add(item: $item)';
+  return 'TodoPageEvent.save(item: $item)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$AddCopyWith<$Res> implements $TodoPageEventCopyWith<$Res> {
-  factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
+abstract mixin class _$SaveCopyWith<$Res> implements $TodoPageEventCopyWith<$Res> {
+  factory _$SaveCopyWith(_Save value, $Res Function(_Save) _then) = __$SaveCopyWithImpl;
 @useResult
 $Res call({
  TodoItem item
@@ -300,17 +381,17 @@ $TodoItemCopyWith<$Res> get item;
 
 }
 /// @nodoc
-class __$AddCopyWithImpl<$Res>
-    implements _$AddCopyWith<$Res> {
-  __$AddCopyWithImpl(this._self, this._then);
+class __$SaveCopyWithImpl<$Res>
+    implements _$SaveCopyWith<$Res> {
+  __$SaveCopyWithImpl(this._self, this._then);
 
-  final _Add _self;
-  final $Res Function(_Add) _then;
+  final _Save _self;
+  final $Res Function(_Save) _then;
 
 /// Create a copy of TodoPageEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? item = null,}) {
-  return _then(_Add(
+  return _then(_Save(
 item: null == item ? _self.item : item // ignore: cast_nullable_to_non_nullable
 as TodoItem,
   ));
@@ -463,7 +544,7 @@ as String,
 /// @nodoc
 mixin _$TodoPageState {
 
- TodoPageStatus get status; List<TodoItem> get items;
+ TodoPageStatus get status; List<TodoItem> get items; TodoItem? get editingItem;
 /// Create a copy of TodoPageState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -474,16 +555,16 @@ $TodoPageStateCopyWith<TodoPageState> get copyWith => _$TodoPageStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodoPageState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.items, items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodoPageState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.editingItem, editingItem) || other.editingItem == editingItem));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(items));
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(items),editingItem);
 
 @override
 String toString() {
-  return 'TodoPageState(status: $status, items: $items)';
+  return 'TodoPageState(status: $status, items: $items, editingItem: $editingItem)';
 }
 
 
@@ -494,11 +575,11 @@ abstract mixin class $TodoPageStateCopyWith<$Res>  {
   factory $TodoPageStateCopyWith(TodoPageState value, $Res Function(TodoPageState) _then) = _$TodoPageStateCopyWithImpl;
 @useResult
 $Res call({
- TodoPageStatus status, List<TodoItem> items
+ TodoPageStatus status, List<TodoItem> items, TodoItem? editingItem
 });
 
 
-
+$TodoItemCopyWith<$Res>? get editingItem;
 
 }
 /// @nodoc
@@ -511,14 +592,27 @@ class _$TodoPageStateCopyWithImpl<$Res>
 
 /// Create a copy of TodoPageState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? items = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? items = null,Object? editingItem = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TodoPageStatus,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
-as List<TodoItem>,
+as List<TodoItem>,editingItem: freezed == editingItem ? _self.editingItem : editingItem // ignore: cast_nullable_to_non_nullable
+as TodoItem?,
   ));
 }
+/// Create a copy of TodoPageState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TodoItemCopyWith<$Res>? get editingItem {
+    if (_self.editingItem == null) {
+    return null;
+  }
 
+  return $TodoItemCopyWith<$Res>(_self.editingItem!, (value) {
+    return _then(_self.copyWith(editingItem: value));
+  });
+}
 }
 
 
@@ -600,10 +694,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TodoPageStatus status,  List<TodoItem> items)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TodoPageStatus status,  List<TodoItem> items,  TodoItem? editingItem)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodoState() when $default != null:
-return $default(_that.status,_that.items);case _:
+return $default(_that.status,_that.items,_that.editingItem);case _:
   return orElse();
 
 }
@@ -621,10 +715,10 @@ return $default(_that.status,_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TodoPageStatus status,  List<TodoItem> items)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TodoPageStatus status,  List<TodoItem> items,  TodoItem? editingItem)  $default,) {final _that = this;
 switch (_that) {
 case _TodoState():
-return $default(_that.status,_that.items);case _:
+return $default(_that.status,_that.items,_that.editingItem);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -641,10 +735,10 @@ return $default(_that.status,_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TodoPageStatus status,  List<TodoItem> items)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TodoPageStatus status,  List<TodoItem> items,  TodoItem? editingItem)?  $default,) {final _that = this;
 switch (_that) {
 case _TodoState() when $default != null:
-return $default(_that.status,_that.items);case _:
+return $default(_that.status,_that.items,_that.editingItem);case _:
   return null;
 
 }
@@ -656,7 +750,7 @@ return $default(_that.status,_that.items);case _:
 
 
 class _TodoState implements TodoPageState {
-  const _TodoState({this.status = TodoPageStatus.listing, final  List<TodoItem> items = const []}): _items = items;
+  const _TodoState({this.status = TodoPageStatus.listing, final  List<TodoItem> items = const [], this.editingItem}): _items = items;
   
 
 @override@JsonKey() final  TodoPageStatus status;
@@ -667,6 +761,7 @@ class _TodoState implements TodoPageState {
   return EqualUnmodifiableListView(_items);
 }
 
+@override final  TodoItem? editingItem;
 
 /// Create a copy of TodoPageState
 /// with the given fields replaced by the non-null parameter values.
@@ -678,16 +773,16 @@ _$TodoStateCopyWith<_TodoState> get copyWith => __$TodoStateCopyWithImpl<_TodoSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodoState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._items, _items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodoState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.editingItem, editingItem) || other.editingItem == editingItem));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(_items));
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(_items),editingItem);
 
 @override
 String toString() {
-  return 'TodoPageState(status: $status, items: $items)';
+  return 'TodoPageState(status: $status, items: $items, editingItem: $editingItem)';
 }
 
 
@@ -698,11 +793,11 @@ abstract mixin class _$TodoStateCopyWith<$Res> implements $TodoPageStateCopyWith
   factory _$TodoStateCopyWith(_TodoState value, $Res Function(_TodoState) _then) = __$TodoStateCopyWithImpl;
 @override @useResult
 $Res call({
- TodoPageStatus status, List<TodoItem> items
+ TodoPageStatus status, List<TodoItem> items, TodoItem? editingItem
 });
 
 
-
+@override $TodoItemCopyWith<$Res>? get editingItem;
 
 }
 /// @nodoc
@@ -715,15 +810,28 @@ class __$TodoStateCopyWithImpl<$Res>
 
 /// Create a copy of TodoPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? items = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? items = null,Object? editingItem = freezed,}) {
   return _then(_TodoState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TodoPageStatus,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
-as List<TodoItem>,
+as List<TodoItem>,editingItem: freezed == editingItem ? _self.editingItem : editingItem // ignore: cast_nullable_to_non_nullable
+as TodoItem?,
   ));
 }
 
+/// Create a copy of TodoPageState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TodoItemCopyWith<$Res>? get editingItem {
+    if (_self.editingItem == null) {
+    return null;
+  }
 
+  return $TodoItemCopyWith<$Res>(_self.editingItem!, (value) {
+    return _then(_self.copyWith(editingItem: value));
+  });
+}
 }
 
 // dart format on
