@@ -9,16 +9,11 @@ part 'todo_page_state.dart';
 
 class TodoPageBloc extends Bloc<TodoPageEvent, TodoPageState> {
   TodoPageBloc() : super(const TodoPageState()) {
-    on<_Adding>(_onAdding);
     on<_Editing>(_onEditing);
     on<_Listing>(_onListing);
     on<_Save>(_onSave);
     on<_Remove>(_onRemove);
     on<_ToggleComplete>(_onToggleComplete);
-  }
-
-  Future<void> _onAdding(_Adding event, Emitter<TodoPageState> emit) async {
-    emit(state.copyWith(status: TodoPageStatus.adding));
   }
 
   Future<void> _onEditing(_Editing event, Emitter<TodoPageState> emit) async {
@@ -35,7 +30,7 @@ class TodoPageBloc extends Bloc<TodoPageEvent, TodoPageState> {
   }
 
   Future<void> _onSave(_Save event, Emitter<TodoPageState> emit) async {
-    if (state.status == TodoPageStatus.editing) {
+    if (event.item.id.isNotEmpty) {
       final updatedItems = state.items.map((item) {
         if (item.id == event.item.id) {
           return event.item;

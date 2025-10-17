@@ -4,5 +4,8 @@
     "@todoAppBarTitle": {
         "description": "Text shown in the AppBar of the Todo Page"
     },
-    "todoAddingViewTextFieldLabel" : "Writing todo..."
+    "todoAddingViewTextFieldLabel" : "Writing todo...",
+    "todoAddingViewAppBarTitleAdd" : "adding todo",
+    "todoAddingViewAppBarTitleEdit" : "Editing todo"
+
 }

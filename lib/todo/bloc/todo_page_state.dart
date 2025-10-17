@@ -1,6 +1,6 @@
 part of 'todo_page_bloc.dart';
 
-enum TodoPageStatus { listing, adding, editing }
+enum TodoPageStatus { listing, editing }
 
 @freezed
 abstract class TodoPageState with _$TodoPageState {

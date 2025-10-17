@@ -24,21 +24,15 @@ class TodoView extends StatelessWidget {
     final todoPageStatus = context.select(
       (TodoPageBloc bloc) => bloc.state.status,
     );
-
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.todoAppBarTitle)),
-      body: BlocBuilder<TodoPageBloc, TodoPageState>(
-        builder: (context, state) {
-          if (todoPageStatus == TodoPageStatus.adding) {
-            return const TodoAddingView(item: null);
-          }
-
-          if (todoPageStatus == TodoPageStatus.editing) {
-            return TodoAddingView(item: state.editingItem);
-          }
-
-          final todoItems = state.items;
-          return ListView.separated(
+    return BlocBuilder<TodoPageBloc, TodoPageState>(
+      builder: (context, state) {
+        if (todoPageStatus == TodoPageStatus.editing) {
+          return TodoAddingView(item: state.editingItem);
+        }
+        final todoItems = state.items;
+        return Scaffold(
+          appBar: AppBar(title: Text(l10n.todoAppBarTitle)),
+          body: ListView.separated(
             itemBuilder: (context, index) {
               final item = todoItems[index];
               return ListTile(
@@ -51,15 +45,7 @@ class TodoView extends StatelessWidget {
                   },
                 ),
                 title: InkWell(
-                  child: Text(
-                    item.title,
-                    style: item.completed
-                        ? const TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                            color: Colors.grey,
-                          )
-                        : null,
-                  ),
+                  child: TodoItemView(item: item),
                   onTap: () {
                     context.read<TodoPageBloc>().add(
                       TodoPageEvent.editing(item: item),
@@ -80,90 +66,46 @@ class TodoView extends StatelessWidget {
               return const Divider();
             },
             itemCount: todoItems.length,
-          );
-        },
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (todoPageStatus != TodoPageStatus.adding)
-            FloatingActionButton(
-              onPressed: () => context.read<TodoPageBloc>().add(
-                const TodoPageEvent.adding(),
+          ),
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            spacing: 26,
+            children: [
+              FloatingActionButton(
+                onPressed: () => context.read<TodoPageBloc>().add(
+                  const TodoPageEvent.editing(
+                    item: TodoItem(id: '', title: ''),
+                  ),
+                ),
+                child: const Icon(Icons.text_fields),
               ),
-              child: const Icon(Icons.add),
-            ),
-          if (todoPageStatus == TodoPageStatus.adding)
-            FloatingActionButton(
-              onPressed: () => context.read<TodoPageBloc>().add(
-                const TodoPageEvent.listing(),
-              ),
-              child: const Icon(Icons.close),
-            ),
-        ],
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
 
-class TodoAddingView extends StatefulWidget {
-  const TodoAddingView({required this.item, super.key});
+class TodoItemView extends StatelessWidget {
+  const TodoItemView({
+    required this.item,
+    super.key,
+  });
 
-  final TodoItem? item;
-
-  @override
-  State<TodoAddingView> createState() => _TodoAddingViewState();
-}
-
-class _TodoAddingViewState extends State<TodoAddingView> {
-  final _textController = TextEditingController();
+  final TodoItem item;
 
   @override
   Widget build(BuildContext context) {
-    if (widget.item != null) {
-      _textController.text = widget.item!.title;
-    }
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        spacing: 16,
-        children: [
-          TextField(
-            controller: _textController,
-            autofocus: true,
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              labelText: context.l10n.todoAddingViewTextFieldLabel,
-            ),
-            onSubmitted: (value) {
-              if (value.isNotEmpty) {
-                final newItem = TodoItem(
-                  id: widget.item?.id ?? '',
-                  title: value,
-                );
-                context.read<TodoPageBloc>().add(
-                  TodoPageEvent.save(item: newItem),
-                );
-              }
-            },
-          ),
-          OutlinedButton(
-            onPressed: () {
-              if (_textController.text.isNotEmpty) {
-                final newItem = TodoItem(
-                  id: widget.item?.id ?? '',
-                  title: _textController.text,
-                );
-                context.read<TodoPageBloc>().add(
-                  TodoPageEvent.save(item: newItem),
-                );
-              }
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
+    return Text(
+      item.title,
+      style: item.completed
+          ? const TextStyle(
+              decoration: TextDecoration.lineThrough,
+              color: Colors.grey,
+            )
+          : null,
     );
   }
 }
