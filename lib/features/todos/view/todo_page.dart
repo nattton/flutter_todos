@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todos/features/todos/todo.dart';
+import 'package:flutter_todos/features/todos/view_model/todos_view_model.dart';
 import 'package:flutter_todos/l10n/l10n.dart';
-import 'package:flutter_todos/todo/todo.dart';
+import 'package:provider/provider.dart';
 
 class TodoPage extends StatelessWidget {
   const TodoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => TodoPageBloc(),
+    return ChangeNotifierProvider(
+      create: (_) => TodosViewModel(),
       child: const TodoView(),
     );
   }
@@ -20,16 +21,15 @@ class TodoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final todoPageStatus = context.select(
-      (TodoPageBloc bloc) => bloc.state.status,
-    );
-    return BlocBuilder<TodoPageBloc, TodoPageState>(
-      builder: (context, state) {
-        if (todoPageStatus == TodoPageStatus.editing) {
-          return TodoAddingView(item: state.editingItem);
+    return Consumer<TodosViewModel>(
+      builder: (context, viewModel, child) {
+        if (viewModel.status == TodoPageStatus.editing) {
+          return TodoAddingView(item: viewModel.editingItem);
         }
-        final todoItems = state.items;
+
+        final l10n = context.l10n;
+        final todoItems = viewModel.items;
+
         return Scaffold(
           appBar: AppBar(title: Text(l10n.todoAppBarTitle)),
           body: ListView.separated(
@@ -39,25 +39,19 @@ class TodoView extends StatelessWidget {
                 leading: Checkbox(
                   value: item.completed,
                   onChanged: (value) {
-                    context.read<TodoPageBloc>().add(
-                      TodoPageEvent.toggleComplete(id: item.id),
-                    );
+                    context.read<TodosViewModel>().toggleTodo(item.id);
                   },
                 ),
                 title: InkWell(
                   child: TodoItemView(item: item),
                   onTap: () {
-                    context.read<TodoPageBloc>().add(
-                      TodoPageEvent.editing(item: item),
-                    );
+                    context.read<TodosViewModel>().startEditing(item);
                   },
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    context.read<TodoPageBloc>().add(
-                      TodoPageEvent.remove(id: item.id),
-                    );
+                    context.read<TodosViewModel>().removeTodo(item.id);
                   },
                 ),
               );
@@ -73,10 +67,8 @@ class TodoView extends StatelessWidget {
             spacing: 26,
             children: [
               FloatingActionButton(
-                onPressed: () => context.read<TodoPageBloc>().add(
-                  const TodoPageEvent.editing(
-                    item: TodoItem(id: '', title: ''),
-                  ),
+                onPressed: () => context.read<TodosViewModel>().startEditing(
+                  const TodoItem(id: '', title: ''),
                 ),
                 child: const Icon(Icons.text_fields),
               ),

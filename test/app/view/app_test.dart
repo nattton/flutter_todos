@@ -3,7 +3,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_todos/app/app.dart';
-import 'package:flutter_todos/todo/todo.dart';
+import 'package:flutter_todos/features/todos/todo.dart';
 
 void main() {
   group('App', () {

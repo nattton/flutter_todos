@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_it/flutter_it.dart';
+import 'package:flutter_todos/features/todos/todo.dart';
+import 'package:flutter_todos/features/todos/view_model/todos_view_model.dart';
 import 'package:flutter_todos/l10n/l10n.dart';
-import 'package:flutter_todos/todo/todo.dart';
+import 'package:provider/provider.dart';
 
-class TodoAddingView extends StatefulWidget {
+class TodoAddingView extends WatchingWidget {
   const TodoAddingView({required this.item, super.key});
 
   final TodoItem? item;
 
   @override
-  State<TodoAddingView> createState() => _TodoAddingViewState();
-}
-
-class _TodoAddingViewState extends State<TodoAddingView> {
-  final _textController = TextEditingController();
-
-  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    if (widget.item != null) {
-      _textController.text = widget.item!.title;
+    final textController = createOnce(TextEditingController.new);
+    if (item != null) {
+      textController.text = item!.title;
     }
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.item != null
+          item?.id.isNotEmpty ?? false
               ? l10n.todoAddingViewAppBarTitleEdit
               : l10n.todoAddingViewAppBarTitleAdd,
         ),
@@ -35,7 +31,7 @@ class _TodoAddingViewState extends State<TodoAddingView> {
           spacing: 16,
           children: [
             TextField(
-              controller: _textController,
+              controller: textController,
               autofocus: true,
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
@@ -44,25 +40,21 @@ class _TodoAddingViewState extends State<TodoAddingView> {
               onSubmitted: (value) {
                 if (value.isNotEmpty) {
                   final newItem = TodoItem(
-                    id: widget.item?.id ?? '',
+                    id: item?.id ?? '',
                     title: value,
                   );
-                  context.read<TodoPageBloc>().add(
-                    TodoPageEvent.save(item: newItem),
-                  );
+                  context.read<TodosViewModel>().saveTodo(newItem);
                 }
               },
             ),
             OutlinedButton(
               onPressed: () {
-                if (_textController.text.isNotEmpty) {
+                if (textController.text.isNotEmpty) {
                   final newItem = TodoItem(
-                    id: widget.item?.id ?? '',
-                    title: _textController.text,
+                    id: item?.id ?? '',
+                    title: textController.text,
                   );
-                  context.read<TodoPageBloc>().add(
-                    TodoPageEvent.save(item: newItem),
-                  );
+                  context.read<TodosViewModel>().saveTodo(newItem);
                 }
               },
               child: const Text('Save'),
@@ -76,9 +68,7 @@ class _TodoAddingViewState extends State<TodoAddingView> {
         spacing: 26,
         children: [
           FloatingActionButton(
-            onPressed: () => context.read<TodoPageBloc>().add(
-              const TodoPageEvent.listing(),
-            ),
+            onPressed: () => context.read<TodosViewModel>().stopEditing(),
             child: const Icon(Icons.close),
           ),
         ],

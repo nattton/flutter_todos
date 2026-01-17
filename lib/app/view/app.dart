@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_todos/features/todos/todo.dart';
 import 'package:flutter_todos/l10n/l10n.dart';
-import 'package:flutter_todos/todo/todo.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
