@@ -24,7 +24,7 @@ class TodoView extends StatelessWidget {
     return Consumer<TodosViewModel>(
       builder: (context, viewModel, child) {
         if (viewModel.status == TodoPageStatus.editing) {
-          return TodoAddingView(item: viewModel.editingItem);
+          return const TodoAddingView();
         }
 
         final l10n = context.l10n;
@@ -67,9 +67,8 @@ class TodoView extends StatelessWidget {
             spacing: 26,
             children: [
               FloatingActionButton(
-                onPressed: () => context.read<TodosViewModel>().startEditing(
-                  const TodoItem(id: '', title: ''),
-                ),
+                onPressed: () =>
+                    context.read<TodosViewModel>().startNewEditing(),
                 child: const Icon(Icons.text_fields),
               ),
             ],

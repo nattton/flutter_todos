@@ -13,14 +13,16 @@ void main() {
     test('initial state is correct', () {
       expect(viewModel.status, TodoPageStatus.listing);
       expect(viewModel.items, isEmpty);
-      expect(viewModel.editingItem, isNull);
+      expect(viewModel.editingId, '');
+      expect(viewModel.editingTitle, '');
     });
 
     test('startEditing updates status and editingItem', () {
       const item = TodoItem(id: '1', title: 'Test');
       viewModel.startEditing(item);
       expect(viewModel.status, TodoPageStatus.editing);
-      expect(viewModel.editingItem, item);
+      expect(viewModel.editingId, item.id);
+      expect(viewModel.editingTitle, item.title);
     });
 
     test('stopEditing resets status and editingItem', () {
@@ -28,50 +30,66 @@ void main() {
       viewModel.startEditing(item);
       viewModel.stopEditing();
       expect(viewModel.status, TodoPageStatus.listing);
-      expect(viewModel.editingItem, isNull);
+      expect(viewModel.editingId, '');
+      expect(viewModel.editingTitle, '');
     });
 
     test('saveTodo adds new item', () {
-      const item = TodoItem(id: '', title: 'Test');
-      viewModel.saveTodo(item);
+      viewModel.startEditing(const TodoItem(id: '', title: 'Test'));
+      viewModel.saveTodo();
       expect(viewModel.items.length, 1);
       expect(viewModel.items.first.title, 'Test');
       expect(viewModel.items.first.id, isNotEmpty);
       expect(viewModel.status, TodoPageStatus.listing);
+      expect(viewModel.editingId, '');
+      expect(viewModel.editingTitle, '');
     });
 
     test('saveTodo updates existing item', () {
-      const item1 = TodoItem(id: '1', title: 'Test 1');
-      const item2 = TodoItem(id: '2', title: 'Test 2');
-      // Add items manually for testing update (or use saveTodo if ids are generated)
-      // Since we need to update existing, let's add one first
-      viewModel.saveTodo(const TodoItem(id: '', title: 'Initial'));
+      viewModel.startEditing(const TodoItem(id: '', title: 'Initial'));
+      viewModel.saveTodo();
       final addedId = viewModel.items.first.id;
 
-      final updatedItem = viewModel.items.first.copyWith(title: 'Updated');
-      viewModel.saveTodo(updatedItem);
+      viewModel.startEditing(const TodoItem(id: '', title: 'Updated'));
+      viewModel.saveTodo();
 
-      expect(viewModel.items.length, 1);
-      expect(viewModel.items.first.title, 'Updated');
+      expect(viewModel.items.length, 2);
+      expect(viewModel.items.first.title, 'Initial');
       expect(viewModel.items.first.id, addedId);
+      expect(viewModel.items.last.title, 'Updated');
+      expect(viewModel.items.last.id, isNotEmpty);
+      expect(viewModel.status, TodoPageStatus.listing);
+      expect(viewModel.editingId, '');
+      expect(viewModel.editingTitle, '');
     });
 
     test('removeTodo removes item', () {
-      viewModel.saveTodo(const TodoItem(id: '', title: 'Test'));
+      viewModel.startEditing(const TodoItem(id: '', title: 'Test'));
+      viewModel.saveTodo();
       final id = viewModel.items.first.id;
       viewModel.removeTodo(id);
       expect(viewModel.items, isEmpty);
+      expect(viewModel.status, TodoPageStatus.listing);
+      expect(viewModel.editingId, '');
+      expect(viewModel.editingTitle, '');
     });
 
     test('toggleTodo toggles completion', () {
-      viewModel.saveTodo(const TodoItem(id: '', title: 'Test'));
+      viewModel.startEditing(const TodoItem(id: '', title: 'Test'));
+      viewModel.saveTodo();
       final id = viewModel.items.first.id;
 
       viewModel.toggleTodo(id);
       expect(viewModel.items.first.completed, true);
+      expect(viewModel.status, TodoPageStatus.listing);
+      expect(viewModel.editingId, '');
+      expect(viewModel.editingTitle, '');
 
       viewModel.toggleTodo(id);
       expect(viewModel.items.first.completed, false);
+      expect(viewModel.status, TodoPageStatus.listing);
+      expect(viewModel.editingId, '');
+      expect(viewModel.editingTitle, '');
     });
   });
 }

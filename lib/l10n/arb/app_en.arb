@@ -6,6 +6,8 @@
     },
     "todoAddingViewTextFieldLabel" : "Writing todo...",
     "todoAddingViewAppBarTitleAdd" : "Adding todo",
-    "todoAddingViewAppBarTitleEdit" : "Editing todo"
+    "todoAddingViewAppBarTitleEdit" : "Editing todo",
+    "todoAddingViewButtonUpdate" : "Update",
+    "todoAddingViewButtonSave" : "Save"
 
 }

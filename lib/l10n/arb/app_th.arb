@@ -1,10 +1,12 @@
 {
-    "@@locale": "es",
+    "@@locale": "th",
     "todoAppBarTitle": "Todo",
     "@todoAppBarTitle": {
         "description": "Text shown in the AppBar of the Todo Page"
     },
     "todoAddingViewTextFieldLabel" : "Writing todo...",
     "todoAddingViewAppBarTitleAdd" : "Adding todo",
-    "todoAddingViewAppBarTitleEdit" : "Editing todo"
+    "todoAddingViewAppBarTitleEdit" : "Editing todo",
+    "todoAddingViewButtonUpdate" : "Update",
+    "todoAddingViewButtonSave" : "Save"
 }

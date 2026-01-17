@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_it/flutter_it.dart';
-import 'package:flutter_todos/features/todos/todo.dart';
 import 'package:flutter_todos/features/todos/view_model/todos_view_model.dart';
 import 'package:flutter_todos/l10n/l10n.dart';
 import 'package:provider/provider.dart';
 
 class TodoAddingView extends WatchingWidget {
-  const TodoAddingView({required this.item, super.key});
-
-  final TodoItem? item;
+  const TodoAddingView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final textController = createOnce(TextEditingController.new);
-    if (item != null) {
-      textController.text = item!.title;
-    }
+    final editingId = context.read<TodosViewModel>().editingId;
+    final editingTitle = context.read<TodosViewModel>().editingTitle;
+    final textController = createOnce(
+      () => TextEditingController(text: editingTitle),
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          item?.id.isNotEmpty ?? false
+          editingTitle.isNotEmpty
               ? l10n.todoAddingViewAppBarTitleEdit
               : l10n.todoAddingViewAppBarTitleAdd,
         ),
@@ -37,27 +35,22 @@ class TodoAddingView extends WatchingWidget {
               decoration: InputDecoration(
                 labelText: context.l10n.todoAddingViewTextFieldLabel,
               ),
+              onChanged: (value) {
+                context.read<TodosViewModel>().setEditingTitle(value);
+              },
               onSubmitted: (value) {
-                if (value.isNotEmpty) {
-                  final newItem = TodoItem(
-                    id: item?.id ?? '',
-                    title: value,
-                  );
-                  context.read<TodosViewModel>().saveTodo(newItem);
-                }
+                context.read<TodosViewModel>().saveTodo();
               },
             ),
             OutlinedButton(
               onPressed: () {
-                if (textController.text.isNotEmpty) {
-                  final newItem = TodoItem(
-                    id: item?.id ?? '',
-                    title: textController.text,
-                  );
-                  context.read<TodosViewModel>().saveTodo(newItem);
-                }
+                context.read<TodosViewModel>().saveTodo();
               },
-              child: const Text('Save'),
+              child: Text(
+                editingId.isNotEmpty
+                    ? l10n.todoAddingViewButtonUpdate
+                    : l10n.todoAddingViewButtonSave,
+              ),
             ),
           ],
         ),

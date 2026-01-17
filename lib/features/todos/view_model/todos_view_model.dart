@@ -7,25 +7,60 @@ enum TodoPageStatus { listing, editing }
 class TodosViewModel extends ChangeNotifier {
   TodoPageStatus _status = TodoPageStatus.listing;
   List<TodoItem> _items = [];
-  TodoItem? _editingItem;
+  String _editingId = '';
+  String _editingTitle = '';
+  bool _editingCompleted = false;
 
   TodoPageStatus get status => _status;
   List<TodoItem> get items => _items;
-  TodoItem? get editingItem => _editingItem;
+  String get editingId => _editingId;
+  String get editingTitle => _editingTitle;
+
+  void setEditingTitle(String title) {
+    _editingTitle = title;
+    notifyListeners();
+  }
+
+  void startNewEditing() {
+    _status = TodoPageStatus.editing;
+    _editingId = '';
+    _editingTitle = '';
+    _editingCompleted = false;
+    notifyListeners();
+  }
 
   void startEditing(TodoItem item) {
     _status = TodoPageStatus.editing;
-    _editingItem = item;
+    _editingId = item.id;
+    _editingTitle = item.title;
+    _editingCompleted = item.completed;
     notifyListeners();
   }
 
   void stopEditing() {
     _status = TodoPageStatus.listing;
-    _editingItem = null;
+    clearEditing();
     notifyListeners();
   }
 
-  void saveTodo(TodoItem item) {
+  void clearEditing() {
+    _editingId = '';
+    _editingTitle = '';
+    _editingCompleted = false;
+    notifyListeners();
+  }
+
+  void saveTodo() {
+    if (_editingTitle.isEmpty) {
+      return;
+    }
+
+    final item = TodoItem(
+      id: _editingId,
+      title: _editingTitle,
+      completed: _editingCompleted,
+    );
+
     if (item.id.isNotEmpty) {
       _items = _items.map((i) => i.id == item.id ? item : i).toList();
     } else {
@@ -33,7 +68,7 @@ class TodosViewModel extends ChangeNotifier {
       _items = [..._items, newItem];
     }
     _status = TodoPageStatus.listing;
-    _editingItem = null;
+    clearEditing();
     notifyListeners();
   }
 
