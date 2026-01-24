@@ -149,5 +149,82 @@ void main() {
       ).called(1);
       expect(viewModel.items.first.completed, false);
     });
+    test('setEditingTitle updates editingTitle', () {
+      viewModel.setEditingTitle('New Title');
+      expect(viewModel.editingTitle, 'New Title');
+    });
+
+    test('clearEditing resets editing fields', () {
+      const item = TodoDto(id: '1', title: 'Test');
+      viewModel.startEditing(item);
+      expect(viewModel.editingId, '1');
+
+      viewModel.clearEditing();
+
+      expect(viewModel.editingId, '');
+      expect(viewModel.editingTitle, '');
+      expect(
+        viewModel.status,
+        TodoPageStatus.editing,
+      ); // clearEditing doesn't change status
+    });
+
+    test('saveTodo returns early if editingTitle is empty', () async {
+      viewModel.startNewEditing();
+      // Title is empty by default
+
+      await viewModel.saveTodo();
+
+      verifyNever(() => mockApiClient.addTodo(any()));
+      verifyNever(() => mockApiClient.updateTodo(any()));
+    });
+
+    test('saveTodo handles exception and resets status', () async {
+      viewModel
+        ..startNewEditing()
+        ..setEditingTitle('Fail');
+
+      when(() => mockApiClient.addTodo(any())).thenThrow(Exception('Failed'));
+
+      await viewModel.saveTodo();
+
+      verify(() => mockApiClient.addTodo(any())).called(1);
+      expect(viewModel.status, TodoPageStatus.listing);
+      expect(viewModel.editingTitle, '');
+    });
+
+    test('removeTodo reverts optimistic update on failure', () async {
+      const item = TodoDto(id: '1', title: 'Test');
+      when(() => mockApiClient.getTodos()).thenAnswer((_) async => [item]);
+      when(
+        () => mockApiClient.deleteTodo(any()),
+      ).thenThrow(Exception('Failed'));
+
+      await viewModel.init();
+      expect(viewModel.items.length, 1);
+
+      await viewModel.removeTodo('1');
+
+      verify(() => mockApiClient.deleteTodo('1')).called(1);
+      // Items should be present again after revert
+      expect(viewModel.items.length, 1);
+      expect(viewModel.items.first, item);
+    });
+
+    test('toggleTodo reverts optimistic update on failure', () async {
+      const item = TodoDto(id: '1', title: 'Test'); // completed: false
+      when(() => mockApiClient.getTodos()).thenAnswer((_) async => [item]);
+      when(
+        () => mockApiClient.updateTodo(any()),
+      ).thenThrow(Exception('Failed'));
+
+      await viewModel.init();
+
+      await viewModel.toggleTodo('1');
+
+      verify(() => mockApiClient.updateTodo(any())).called(1);
+      // Should revert to false
+      expect(viewModel.items.first.completed, false);
+    });
   });
 }
