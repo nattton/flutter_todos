@@ -2,8 +2,8 @@
 // Do not modify
 // Check in to version control
 
-import 'package:hive_ce/hive_ce.dart';
 import 'package:flutter_todos/data/services/models/todo_dto.dart';
+import 'package:hive_ce/hive_ce.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {

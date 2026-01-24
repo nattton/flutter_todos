@@ -40,7 +40,8 @@ class HttpApiClient implements ApiClient {
 
     if (response.statusCode == 201) {
       // jsonplaceholder always returns id 201 for created items
-      // Let's just return the input todo for now with the new ID if we were using a real API
+      // Let's just return the input todo for now with the new ID if we were
+      // using a real API
       // For demo, we just trust it succeeded.
       return TodoDto.fromJson(
         jsonDecode(response.body) as Map<String, dynamic>,

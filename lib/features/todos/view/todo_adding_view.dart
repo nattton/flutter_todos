@@ -38,13 +38,13 @@ class TodoAddingView extends WatchingWidget {
               onChanged: (value) {
                 context.read<TodosViewModel>().setEditingTitle(value);
               },
-              onSubmitted: (value) {
-                context.read<TodosViewModel>().saveTodo();
+              onSubmitted: (value) async {
+                await context.read<TodosViewModel>().saveTodo();
               },
             ),
             OutlinedButton(
-              onPressed: () {
-                context.read<TodosViewModel>().saveTodo();
+              onPressed: () async {
+                await context.read<TodosViewModel>().saveTodo();
               },
               child: Text(
                 editingId.isNotEmpty

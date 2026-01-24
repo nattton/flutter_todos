@@ -47,8 +47,9 @@ void main() {
 
     test('stopEditing resets status and editingItem', () {
       const item = TodoDto(id: '1', title: 'Test');
-      viewModel.startEditing(item);
-      viewModel.stopEditing();
+      viewModel
+        ..startEditing(item)
+        ..stopEditing();
       expect(viewModel.status, TodoPageStatus.listing);
       expect(viewModel.editingId, '');
       expect(viewModel.editingTitle, '');
@@ -91,8 +92,9 @@ void main() {
       // Initialize with data
       await viewModel.init();
 
-      viewModel.startEditing(initialItem);
-      viewModel.setEditingTitle('Updated');
+      viewModel
+        ..startEditing(initialItem)
+        ..setEditingTitle('Updated');
 
       await viewModel.saveTodo();
 
