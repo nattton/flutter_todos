@@ -1,3 +1,5 @@
+// coverage:ignore-file
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_ce/hive_ce.dart';
 
