@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TodoDto {
 
- String get id; String get title; bool get completed;
+@HiveField(0) String get id;@HiveField(1) String get title;@HiveField(2) bool get completed;
 /// Create a copy of TodoDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $TodoDtoCopyWith<$Res>  {
   factory $TodoDtoCopyWith(TodoDto value, $Res Function(TodoDto) _then) = _$TodoDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, bool completed
+@HiveField(0) String id,@HiveField(1) String title,@HiveField(2) bool completed
 });
 
 
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  bool completed)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String id, @HiveField(1)  String title, @HiveField(2)  bool completed)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodoDto() when $default != null:
 return $default(_that.id,_that.title,_that.completed);case _:
@@ -176,7 +176,7 @@ return $default(_that.id,_that.title,_that.completed);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  bool completed)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String id, @HiveField(1)  String title, @HiveField(2)  bool completed)  $default,) {final _that = this;
 switch (_that) {
 case _TodoDto():
 return $default(_that.id,_that.title,_that.completed);case _:
@@ -196,7 +196,7 @@ return $default(_that.id,_that.title,_that.completed);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  bool completed)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String id, @HiveField(1)  String title, @HiveField(2)  bool completed)?  $default,) {final _that = this;
 switch (_that) {
 case _TodoDto() when $default != null:
 return $default(_that.id,_that.title,_that.completed);case _:
@@ -211,12 +211,12 @@ return $default(_that.id,_that.title,_that.completed);case _:
 @JsonSerializable()
 
 class _TodoDto implements TodoDto {
-  const _TodoDto({required this.id, required this.title, this.completed = false});
+  const _TodoDto({@HiveField(0) required this.id, @HiveField(1) required this.title, @HiveField(2) this.completed = false});
   factory _TodoDto.fromJson(Map<String, dynamic> json) => _$TodoDtoFromJson(json);
 
-@override final  String id;
-@override final  String title;
-@override@JsonKey() final  bool completed;
+@override@HiveField(0) final  String id;
+@override@HiveField(1) final  String title;
+@override@JsonKey()@HiveField(2) final  bool completed;
 
 /// Create a copy of TodoDto
 /// with the given fields replaced by the non-null parameter values.
@@ -251,7 +251,7 @@ abstract mixin class _$TodoDtoCopyWith<$Res> implements $TodoDtoCopyWith<$Res> {
   factory _$TodoDtoCopyWith(_TodoDto value, $Res Function(_TodoDto) _then) = __$TodoDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, bool completed
+@HiveField(0) String id,@HiveField(1) String title,@HiveField(2) bool completed
 });
 
 

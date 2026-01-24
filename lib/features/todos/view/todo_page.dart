@@ -43,8 +43,8 @@ class TodoView extends StatelessWidget with WatchItMixin {
               return ListTile(
                 leading: Checkbox(
                   value: item.completed,
-                  onChanged: (value) {
-                    context.read<TodosViewModel>().toggleTodo(item.id);
+                  onChanged: (value) async {
+                    await context.read<TodosViewModel>().toggleTodo(item.id);
                   },
                 ),
                 title: InkWell(
@@ -55,8 +55,8 @@ class TodoView extends StatelessWidget with WatchItMixin {
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    context.read<TodosViewModel>().removeTodo(item.id);
+                  onPressed: () async {
+                    await context.read<TodosViewModel>().removeTodo(item.id);
                   },
                 ),
               );
