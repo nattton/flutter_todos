@@ -19,7 +19,7 @@ class TodoDtoAdapter extends TypeAdapter<TodoDto> {
     return TodoDto(
       id: fields[0] as String,
       title: fields[1] as String,
-      completed: fields[2] as bool? ?? false,
+      completed: !(fields[2] == null) && fields[2] as bool,
     );
   }
 

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_todos/data/services/http_api_client.dart';
+import 'package:flutter_todos/data/services/http/http_api_client.dart';
 import 'package:flutter_todos/data/services/models/todo_dto.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';

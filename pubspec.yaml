@@ -30,7 +30,6 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.2.4
   hive_ce_generator: ^1.11.0
-  hive_test: ^1.0.1
   json_serializable: ^6.11.4
   mocktail: ^1.0.4
   very_good_analysis: ^10.0.0

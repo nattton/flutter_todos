@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_todos/data/services/local_api_client.dart';
+import 'package:flutter_todos/data/services/local/local_api_client.dart';
 import 'package:flutter_todos/data/services/models/todo_dto.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:mocktail/mocktail.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_it/flutter_it.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_todos/core/di/injector_dev.dart';
 import 'package:flutter_todos/data/services/api_client.dart';
-import 'package:flutter_todos/data/services/local_api_client.dart';
-import 'package:flutter_todos/main_development.dart';
+import 'package:flutter_todos/data/services/local/local_api_client.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,7 @@ void main() {
   });
 
   test('configureDependencies registers LocalApiClient', () async {
-    await configureDependencies();
+    await configureDevDependencies();
     expect(di.isRegistered<ApiClient>(), isTrue);
     expect(di<ApiClient>(), isA<LocalApiClient>());
   });

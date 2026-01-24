@@ -114,7 +114,8 @@ void main() {
       await tester.pump();
 
       expect(find.byType(TodoAddingView), findsOneWidget);
-      // You might check if the input is pre-filled if TodoAddingView exposes it or via find.text
+      // You might check if the input is pre-filled if TodoAddingView exposes it
+      // or via find.text
     });
   });
 }
