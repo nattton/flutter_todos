@@ -1,21 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_it/flutter_it.dart';
 import 'package:flutter_todos/app/app.dart';
 import 'package:flutter_todos/bootstrap.dart';
+import 'package:flutter_todos/data/services/api_client.dart';
+import 'package:flutter_todos/data/services/local_api_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void initDi() {
-  // we use an async singleton that allows the app to wait for the SharedPreferences to be initialized
-  // di
-  //   ..registerSingletonAsync<SharedPreferences>(
-  //     () async => SharedPreferences.getInstance(),
-  //   )
-  //   /// we ensure that the SharedPreferences is registered before the ApiClient
-  //   /// we register the ApiClientImpl as the ApiClient
-  //   ..registerSingletonWithDependencies<ApiClient>(
-  //     () => ApiClientImpl(prefs: di<SharedPreferences>()),
-  //     dependsOn: [SharedPreferences],
-  //   );
+Future<void> configureDependencies() async {
+  di
+    ..registerSingletonAsync<SharedPreferences>(
+      () async => SharedPreferences.getInstance(),
+    )
+    ..registerSingletonWithDependencies<ApiClient>(
+      () => LocalApiClient(prefs: di<SharedPreferences>()),
+      dependsOn: [SharedPreferences],
+    );
+  await di.allReady();
 }
 
 Future<void> main() async {
-  initDi();
-  await bootstrap(() => const App());
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
+  await bootstrap(App.new);
 }

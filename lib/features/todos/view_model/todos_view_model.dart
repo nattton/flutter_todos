@@ -1,18 +1,27 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_todos/features/todos/todo.dart';
-import 'package:uuid/uuid.dart';
+import 'package:flutter_todos/data/services/api_client.dart';
+import 'package:flutter_todos/data/services/models/todo_dto.dart';
 
 enum TodoPageStatus { listing, editing }
 
 class TodosViewModel extends ChangeNotifier {
+  TodosViewModel({required ApiClient apiClient}) : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
+
+  Future<void> init() async {
+    _items = await _apiClient.getTodos();
+    notifyListeners();
+  }
+
   TodoPageStatus _status = TodoPageStatus.listing;
-  List<TodoItem> _items = [];
+  List<TodoDto> _items = [];
   String _editingId = '';
   String _editingTitle = '';
   bool _editingCompleted = false;
 
   TodoPageStatus get status => _status;
-  List<TodoItem> get items => _items;
+  List<TodoDto> get items => _items;
   String get editingId => _editingId;
   String get editingTitle => _editingTitle;
 
@@ -29,7 +38,7 @@ class TodosViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void startEditing(TodoItem item) {
+  void startEditing(TodoDto item) {
     _status = TodoPageStatus.editing;
     _editingId = item.id;
     _editingTitle = item.title;
@@ -50,40 +59,56 @@ class TodosViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveTodo() {
+  Future<void> saveTodo() async {
     if (_editingTitle.isEmpty) {
       return;
     }
 
-    final item = TodoItem(
+    final item = TodoDto(
       id: _editingId,
       title: _editingTitle,
       completed: _editingCompleted,
     );
 
-    if (item.id.isNotEmpty) {
-      _items = _items.map((i) => i.id == item.id ? item : i).toList();
-    } else {
-      final newItem = item.copyWith(id: const Uuid().v4());
-      _items = [..._items, newItem];
-    }
+    try {
+      if (_editingId.isNotEmpty) {
+        await _apiClient.updateTodo(item);
+        await init();
+      } else {
+        await _apiClient.addTodo(item);
+        await init();
+      }
+    } on Exception catch (_) {}
     _status = TodoPageStatus.listing;
     clearEditing();
     notifyListeners();
   }
 
-  void removeTodo(String id) {
+  Future<void> removeTodo(String id) async {
+    // Optimistic update
+    final oldItems = _items;
     _items = _items.where((item) => item.id != id).toList();
     notifyListeners();
+    try {
+      await _apiClient.deleteTodo(id);
+    } on Exception catch (_) {
+      _items = oldItems;
+      notifyListeners();
+    }
   }
 
-  void toggleTodo(String id) {
-    _items = _items.map((item) {
-      if (item.id == id) {
-        return item.copyWith(completed: !item.completed);
-      }
-      return item;
-    }).toList();
+  Future<void> toggleTodo(String id) async {
+    // Optimistic update
+    final oldItems = _items;
+    final item = _items.firstWhere((item) => item.id == id);
+    final updatedItem = item.copyWith(completed: !item.completed);
+    _items = _items.map((i) => i.id == id ? updatedItem : i).toList();
     notifyListeners();
+    try {
+      await _apiClient.updateTodo(updatedItem);
+    } on Exception catch (_) {
+      _items = oldItems;
+      notifyListeners();
+    }
   }
 }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_it/flutter_it.dart';
+import 'package:flutter_todos/data/services/api_client.dart';
+import 'package:flutter_todos/data/services/models/todo_dto.dart';
 import 'package:flutter_todos/features/todos/todo.dart';
 import 'package:flutter_todos/features/todos/view_model/todos_view_model.dart';
 import 'package:flutter_todos/l10n/l10n.dart';
@@ -10,17 +13,19 @@ class TodoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => TodosViewModel(),
+      create: (_) => TodosViewModel(apiClient: di<ApiClient>()),
       child: const TodoView(),
     );
   }
 }
 
-class TodoView extends StatelessWidget {
+class TodoView extends StatelessWidget with WatchItMixin {
   const TodoView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    callOnce((context) => context.read<TodosViewModel>().init());
+
     return Consumer<TodosViewModel>(
       builder: (context, viewModel, child) {
         if (viewModel.status == TodoPageStatus.editing) {
@@ -85,7 +90,7 @@ class TodoItemView extends StatelessWidget {
     super.key,
   });
 
-  final TodoItem item;
+  final TodoDto item;
 
   @override
   Widget build(BuildContext context) {

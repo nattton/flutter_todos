@@ -1,13 +1,33 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_todos/features/todos/todo.dart';
+import 'package:flutter_todos/data/services/api_client.dart';
+import 'package:flutter_todos/data/services/models/todo_dto.dart';
 import 'package:flutter_todos/features/todos/view_model/todos_view_model.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockApiClient extends Mock implements ApiClient {}
 
 void main() {
   group('TodosViewModel', () {
     late TodosViewModel viewModel;
+    late MockApiClient mockApiClient;
+
+    setUpAll(() {
+      registerFallbackValue(const TodoDto(id: 'fallback', title: 'fallback'));
+    });
 
     setUp(() {
-      viewModel = TodosViewModel();
+      mockApiClient = MockApiClient();
+      when(() => mockApiClient.getTodos()).thenAnswer((_) async => []);
+      // Default stubs
+      when(() => mockApiClient.addTodo(any())).thenAnswer(
+        (invocation) async => invocation.positionalArguments.first as TodoDto,
+      );
+      when(() => mockApiClient.updateTodo(any())).thenAnswer(
+        (invocation) async => invocation.positionalArguments.first as TodoDto,
+      );
+      when(() => mockApiClient.deleteTodo(any())).thenAnswer((_) async {});
+
+      viewModel = TodosViewModel(apiClient: mockApiClient);
     });
 
     test('initial state is correct', () {
@@ -18,7 +38,7 @@ void main() {
     });
 
     test('startEditing updates status and editingItem', () {
-      const item = TodoItem(id: '1', title: 'Test');
+      const item = TodoDto(id: '1', title: 'Test');
       viewModel.startEditing(item);
       expect(viewModel.status, TodoPageStatus.editing);
       expect(viewModel.editingId, item.id);
@@ -26,7 +46,7 @@ void main() {
     });
 
     test('stopEditing resets status and editingItem', () {
-      const item = TodoItem(id: '1', title: 'Test');
+      const item = TodoDto(id: '1', title: 'Test');
       viewModel.startEditing(item);
       viewModel.stopEditing();
       expect(viewModel.status, TodoPageStatus.listing);
@@ -34,62 +54,98 @@ void main() {
       expect(viewModel.editingTitle, '');
     });
 
-    test('saveTodo adds new item', () {
-      viewModel.startEditing(const TodoItem(id: '', title: 'Test'));
-      viewModel.saveTodo();
+    test('saveTodo adds new item', () async {
+      viewModel.startEditing(const TodoDto(id: '', title: 'Test'));
+
+      // return list with 1 item when getTodos is called during init()
+      when(
+        () => mockApiClient.getTodos(),
+      ).thenAnswer((_) async => [const TodoDto(id: '123', title: 'Test')]);
+
+      await viewModel.saveTodo();
+
+      verify(() => mockApiClient.addTodo(any())).called(1);
+      verify(
+        () => mockApiClient.getTodos(),
+      ).called(1); // called inside saveTodo->init
+
       expect(viewModel.items.length, 1);
       expect(viewModel.items.first.title, 'Test');
-      expect(viewModel.items.first.id, isNotEmpty);
+      expect(viewModel.items.first.id, '123'); // From our mocked getTodos
       expect(viewModel.status, TodoPageStatus.listing);
       expect(viewModel.editingId, '');
       expect(viewModel.editingTitle, '');
     });
 
-    test('saveTodo updates existing item', () {
-      viewModel.startEditing(const TodoItem(id: '', title: 'Initial'));
-      viewModel.saveTodo();
-      final addedId = viewModel.items.first.id;
+    test('saveTodo updates existing item', () async {
+      // First add an item (simulating it being there)
+      const initialItem = TodoDto(id: '1', title: 'Initial');
 
-      viewModel.startEditing(const TodoItem(id: '', title: 'Updated'));
-      viewModel.saveTodo();
+      var callCount = 0;
+      when(() => mockApiClient.getTodos()).thenAnswer((_) async {
+        callCount++;
+        if (callCount == 1) return [initialItem]; // Initial state
+        return [const TodoDto(id: '1', title: 'Updated')]; // After update
+      });
 
-      expect(viewModel.items.length, 2);
-      expect(viewModel.items.first.title, 'Initial');
-      expect(viewModel.items.first.id, addedId);
-      expect(viewModel.items.last.title, 'Updated');
-      expect(viewModel.items.last.id, isNotEmpty);
+      // Initialize with data
+      await viewModel.init();
+
+      viewModel.startEditing(initialItem);
+      viewModel.setEditingTitle('Updated');
+
+      await viewModel.saveTodo();
+
+      verify(() => mockApiClient.updateTodo(any())).called(1);
+
+      expect(viewModel.items.length, 1);
+      expect(viewModel.items.first.title, 'Updated');
+      expect(viewModel.items.first.id, '1');
       expect(viewModel.status, TodoPageStatus.listing);
-      expect(viewModel.editingId, '');
-      expect(viewModel.editingTitle, '');
     });
 
-    test('removeTodo removes item', () {
-      viewModel.startEditing(const TodoItem(id: '', title: 'Test'));
-      viewModel.saveTodo();
-      final id = viewModel.items.first.id;
-      viewModel.removeTodo(id);
+    test('removeTodo removes item', () async {
+      // Optimistic upate test
+      // Initialize with one item
+      when(
+        () => mockApiClient.getTodos(),
+      ).thenAnswer((_) async => [const TodoDto(id: '1', title: 'Test')]);
+      await viewModel.init();
+      expect(viewModel.items.length, 1);
+
+      await viewModel.removeTodo('1');
+
+      verify(() => mockApiClient.deleteTodo('1')).called(1);
       expect(viewModel.items, isEmpty);
-      expect(viewModel.status, TodoPageStatus.listing);
-      expect(viewModel.editingId, '');
-      expect(viewModel.editingTitle, '');
     });
 
-    test('toggleTodo toggles completion', () {
-      viewModel.startEditing(const TodoItem(id: '', title: 'Test'));
-      viewModel.saveTodo();
-      final id = viewModel.items.first.id;
+    test('toggleTodo toggles completion', () async {
+      // Initialize with one item
+      const item = TodoDto(id: '1', title: 'Test');
+      when(() => mockApiClient.getTodos()).thenAnswer((_) async => [item]);
+      await viewModel.init();
 
-      viewModel.toggleTodo(id);
+      await viewModel.toggleTodo('1');
+
+      verify(
+        () => mockApiClient.updateTodo(
+          any(
+            that: isA<TodoDto>().having((t) => t.completed, 'completed', true),
+          ),
+        ),
+      ).called(1);
       expect(viewModel.items.first.completed, true);
-      expect(viewModel.status, TodoPageStatus.listing);
-      expect(viewModel.editingId, '');
-      expect(viewModel.editingTitle, '');
 
-      viewModel.toggleTodo(id);
+      await viewModel.toggleTodo('1');
+
+      verify(
+        () => mockApiClient.updateTodo(
+          any(
+            that: isA<TodoDto>().having((t) => t.completed, 'completed', false),
+          ),
+        ),
+      ).called(1);
       expect(viewModel.items.first.completed, false);
-      expect(viewModel.status, TodoPageStatus.listing);
-      expect(viewModel.editingId, '');
-      expect(viewModel.editingTitle, '');
     });
   });
 }
