@@ -9,7 +9,8 @@ class LocalApiClient implements ApiClient {
 
   @override
   Future<List<TodoDto>> getTodos() async {
-    final todos = _box.values.toList();
+    final todos = _box.values.toList()
+      ..sort((a, b) => a.title.compareTo(b.title));
     return todos;
   }
 
